@@ -249,6 +249,26 @@
             }
         }
 
+        /* Music Toggle Button */
+        .music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .music-control:hover {
+            background: var(--primary);
+            color: #000;
+        }
+
         /* Mobile Adjustments */
         @media (max-width: 600px) {
             .main-content {
@@ -263,7 +283,7 @@
 <body>
 
     <div class="bg-overlay"></div>
-    <div class="bg-image" id="bgImage"></div>
+    <div class="bg-image" id="bgImage" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('img1.jpeg');"></div>
     <div id="particles-js"></div>
 
     <div class="welcome-screen" id="welcomeScreen">
@@ -297,17 +317,52 @@
 
         <button class="btn-celebrate" onclick="party()">MORE MAGIC!</button>
     </div>
-    <audio id="birthdaySong" src="https://docs.google.com/uc?export=download&id=1vf-IbjQcWh2VODfnorcdO9ad7eNNuqMF"></audio>
+
+    <div class="music-control" id="musicToggle" onclick="toggleMusic()" style="display: none;">
+        🔊
+    </div>
+
+    <!-- Note: Google Drive links are often unreliable for direct streaming. 
+         If the sound still doesn't play, please ensure you have a 'song.mp3' file in this folder and update the src below to "song.mp3" -->
+    <audio id="birthdaySong" loop pre-load="auto">
+        <source src="_Enthan_Nanbiye_Teddy_Arya_Anirudh_Tamil_Song_Ringtone_(by Fringster.com) (1).mp3" type="audio/mpeg">
+        <source src="song.mp3" type="audio/mpeg">
+        <source src="https://github.com/Kira-7/Happy-Birthday/raw/master/music.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
+        let isPlaying = false;
+
+        function toggleMusic() {
+            const song = document.getElementById('birthdaySong');
+            const btn = document.getElementById('musicToggle');
+            if (isPlaying) {
+                song.pause();
+                btn.innerHTML = '🔇';
+            } else {
+                song.play();
+                btn.innerHTML = '🔊';
+            }
+            isPlaying = !isPlaying;
+        }
+
         function reveal() {
             const welcome = document.getElementById('welcomeScreen');
             const main = document.getElementById('mainContent');
             const bgImage = document.getElementById('bgImage');
             const song = document.getElementById('birthdaySong');
+            const musicBtn = document.getElementById('musicToggle');
 
             // Play the song
-            song.play().catch(e => console.log("Playback failed:", e));
+            song.play().then(() => {
+                isPlaying = true;
+                musicBtn.style.display = 'block';
+            }).catch(e => {
+                console.log("Playback failed:", e);
+                // If it fails, show the button so the user can try manually
+                musicBtn.style.display = 'block';
+                musicBtn.innerHTML = '🔇';
+            });
 
             welcome.style.opacity = '0';
             welcome.style.transform = 'scale(2) perspective(1000px) rotateX(20deg)';
