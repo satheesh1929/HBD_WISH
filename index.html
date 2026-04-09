@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! ✨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #ffd700;
+            --secondary: #ff8c00;
+            --bg-dark: #0a0a0b;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Animated Background Overlay */
+        .bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #0a0a0b 0%, #1a1a2e 100%);
+            z-index: -2;
+        }
+
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('birthday_luxury_bg_1775725498754.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.4;
+            filter: blur(5px);
+            z-index: -1;
+            transition: opacity 2s ease, filter 2s ease;
+        }
+
+        /* Floating Particles */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            position: absolute;
+            z-index: 10;
+            text-align: center;
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gift-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .gift-box {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(255, 140, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .gift-ribbon {
+            position: absolute;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .ribbon-v { width: 30px; height: 100%; }
+        .ribbon-h { height: 30px; width: 100%; }
+
+        .tap-text {
+            margin-top: 1rem;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--primary);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Main Content */
+        .main-content {
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.9);
+            transition: all 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%;
+            max-width: 1000px;
+            padding: 3rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            text-align: center;
+            z-index: 5;
+        }
+
+        .main-content.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #ffd700, #fff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 4s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .message {
+            font-size: clamp(0.9rem, 3.2vw, 1.15rem);
+            font-weight: 300;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Photo Gallery */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 2rem;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            border: 2px solid var(--glass-border);
+            transition: transform 0.5s ease;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.05) rotate(2deg);
+            border-color: var(--primary);
+            z-index: 10;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Hidden photos fix */
+        .photo-item img[src=""] {
+            display: none;
+        }
+
+        .btn-celebrate {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #000;
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 2rem;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .btn-celebrate:hover {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        /* Floating Balloons Background */
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            width: 50px;
+            height: 70px;
+            background: var(--primary);
+            border-radius: 50%;
+            opacity: 0.6;
+            z-index: 1;
+            animation: float-up linear forwards;
+        }
+
+        @keyframes float-up {
+            to {
+                transform: translateY(-120vh) translateX(var(--drift));
+            }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .main-content {
+                padding: 2rem;
+            }
+            .photo-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-overlay"></div>
+    <div class="bg-image" id="bgImage"></div>
+    <div id="particles-js"></div>
+
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="gift-container" onclick="reveal()">
+            <div class="gift-box">
+                <div class="gift-ribbon ribbon-v"></div>
+                <div class="gift-ribbon ribbon-h"></div>
+            </div>
+        </div>
+        <p class="tap-text">Tap to Open Magic</p>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <h1>Happy Birthday!</h1>
+        <p class="message" id="typedMessage"></p>
+        
+        <div class="photo-grid">
+            <div class="photo-item">
+                <img src="WhatsApp Image 2026-04-09 at 1.55.25 PM.jpeg" alt="Birthday Memory 1">
+            </div>
+            <div class="photo-item">
+                <img src="WhatsApp Image 2026-04-09 at 1.59.01 PM.jpeg" alt="Birthday Memory 2">
+            </div>
+            <div class="photo-item">
+                <img src="WhatsApp Image 2026-04-09 at 1.59.01 PM (1).jpeg" alt="Birthday Memory 3">
+            </div>
+            <div class="photo-item">
+                <img src="WhatsApp Image 2026-04-09 at 2.30.13 PM.jpeg" alt="Birthday Memory 4">
+            </div>
+        </div>
+
+        <button class="btn-celebrate" onclick="party()">MORE MAGIC!</button>
+    </div>
+    <audio id="birthdaySong" src="_Enthan_Nanbiye_Teddy_Arya_Anirudh_Tamil_Song_Ringtone_(by Fringster.com).mp3"></audio>
+
+    <script>
+        function reveal() {
+            const welcome = document.getElementById('welcomeScreen');
+            const main = document.getElementById('mainContent');
+            const bgImage = document.getElementById('bgImage');
+            const song = document.getElementById('birthdaySong');
+
+            // Play the song
+            song.play().catch(e => console.log("Playback failed:", e));
+
+            welcome.style.opacity = '0';
+            welcome.style.transform = 'scale(2) perspective(1000px) rotateX(20deg)';
+            
+            setTimeout(() => {
+                welcome.style.display = 'none';
+                main.classList.add('active');
+                bgImage.style.opacity = '0.7';
+                bgImage.style.filter = 'blur(0px)';
+                startTyping();
+                party();
+                createBalloons();
+            }, 500);
+        }
+
+        function startTyping() {
+            const text = "உங்களோடு இருந்த நாட்கள் சாதாரண நாட்கள் என்று தான் எண்ணினேன் ஆனால் நீங்கள் இல்லாத இந்த மூன்று வருடத்தில் தான் தெரிந்தது நான் மகிழ்ச்சியாக இருந்த நாட்கள் அது மட்டுமே. நான் உங்களோடு சேர்ந்து படித்த படிப்பு நான் வாங்கும் பட்டத்தை விட மகிழ்ச்சியாக ஏற்கிறேன்.\n\nMANY MORE HAPPY RETURNS OF THE DAY SISTER";
+            const container = document.getElementById('typedMessage');
+            let i = 0;
+            
+            function type() {
+                if (i < text.length) {
+                    if (text.charAt(i) === '\n') {
+                        container.innerHTML += '<br>';
+                    } else {
+                        container.innerHTML += text.charAt(i);
+                    }
+                    i++;
+                    setTimeout(type, 35);
+                }
+            }
+            type();
+        }
+
+        function party() {
+            var count = 200;
+            var defaults = {
+                origin: { y: 0.7 },
+                zIndex: 1000
+            };
+
+            function fire(particleRatio, opts) {
+                confetti({
+                    ...defaults,
+                    ...opts,
+                    particleCount: Math.floor(count * particleRatio)
+                });
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+        }
+
+        function createBalloons() {
+            setInterval(() => {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                balloon.style.left = Math.random() * 100 + 'vw';
+                balloon.style.setProperty('--drift', (Math.random() * 200 - 100) + 'px');
+                balloon.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                document.body.appendChild(balloon);
+                
+                setTimeout(() => balloon.remove(), 7000);
+            }, 500);
+        }
+
+        // Particle effect logic (simplified)
+        const canvas = document.createElement('canvas');
+        document.getElementById('particles-js').appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initParticles() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            for(let i=0; i<50; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2 + 1,
+                    speed: Math.random() * 0.5 + 0.1
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+            particles.forEach(p => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                p.y -= p.speed;
+                if(p.y < 0) p.y = canvas.height;
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        initParticles();
+        animate();
+    </script>
+</body>
+</html>
