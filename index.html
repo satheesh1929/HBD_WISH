@@ -199,8 +199,9 @@
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 6vw, 4rem);
-            margin-bottom: 1rem;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
             background: linear-gradient(to right, var(--primary), #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -386,7 +387,7 @@
 <body>
 
     <div class="bg-overlay"></div>
-    <div class="bg-image" id="bgImage" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('img2.png');"></div>
+    <div class="bg-image" id="bgImage" style="background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8));"></div>
     <div id="particles-js"></div>
 
     <div class="welcome-screen" id="welcomeScreen">
@@ -400,15 +401,9 @@
     </div>
 
     <div class="main-content" id="mainContent">
-        <h1>Happy Birthday!</h1>
+        <h1>Happy Birthday,<br>Sowmiya! ✨</h1>
         <p class="message" id="typedMessage"></p>
         <div class="signature" id="signature">Forever Your Friend ✨</div>
-        
-        <div class="featured-photo-container">
-            <div class="photo-frame">
-                <img src="img2.png" alt="Special Memory">
-            </div>
-        </div>
 
         <button class="btn-celebrate" onclick="party()">MORE MAGIC!</button>
     </div>
@@ -420,7 +415,7 @@
     <!-- Note: Google Drive links are often unreliable for direct streaming. 
          If the sound still doesn't play, please ensure you have a 'song.mp3' file in this folder and update the src below to "song.mp3" -->
     <audio id="birthdaySong" loop pre-load="auto">
-        <source src="_Oh_My_Kadavule_Friendship_Anthem_Tamil_Ringtone_(by Fringster.com).mp3" type="audio/mpeg">
+        <source src="_Remo_Birthdary_Remo_Birthday_Bgm_Keerthi_Suresh_Bckground_Music_Ringtone_(by Fringster.com).mp3" type="audio/mpeg">
         <source src="song.mp3" type="audio/mpeg">
         <source src="https://github.com/Kira-7/Happy-Birthday/raw/master/music.mp3" type="audio/mpeg">
     </audio>
@@ -474,7 +469,7 @@
         }
 
         function startTyping() {
-            const text = "தோழி... உன்னோடு கழித்த அந்த நினைவுகள் என்றும் என் மனதிற்கு நெருக்கமானவை. இனிய பிறந்தநாள் வாழ்த்துக்கள் என் அன்புத் தோழி!";
+            const text = "Sowmiya... தோழி... உன்னோடு கழித்த அந்த நினைவுகள் என்றும் என் மனதிற்கு நெருக்கமானவை. இனிய பிறந்தநாள் வாழ்த்துக்கள் என் அன்புத் தோழி Sowmiya!";
             const container = document.getElementById('typedMessage');
             let i = 0;
             
