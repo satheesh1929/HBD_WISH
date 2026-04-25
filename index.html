@@ -10,11 +10,12 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
-            --primary: #ffd700;
-            --secondary: #ff8c00;
-            --bg-dark: #0a0a0b;
-            --glass: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --primary: #ff69b4;
+            --secondary: #ff1493;
+            --primary-light: #ffb6c1;
+            --bg-dark: #0f0a0c;
+            --glass: rgba(255, 20, 147, 0.08);
+            --glass-border: rgba(255, 20, 147, 0.2);
         }
 
         * {
@@ -42,7 +43,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, #0a0a0b 0%, #1a1a2e 100%);
+            background: linear-gradient(45deg, #0f0a0c 0%, #2a0a1a 100%);
             z-index: -2;
         }
 
@@ -52,7 +53,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('birthday_luxury_bg_1775725498754.png');
+            background-color: var(--bg-dark);
             background-size: cover;
             background-position: center;
             opacity: 0.4;
@@ -99,11 +100,12 @@
             height: 100%;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(255, 140, 0, 0.3);
+            box-shadow: 0 20px 50px rgba(255, 20, 147, 0.3);
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
+            overflow: hidden;
         }
 
         .gift-ribbon {
@@ -112,8 +114,51 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        .ribbon-v { width: 30px; height: 100%; }
-        .ribbon-h { height: 30px; width: 100%; }
+        .ribbon-v { width: 30px; height: 100%; left: 50%; transform: translateX(-50%); }
+        .ribbon-h { height: 30px; width: 100%; top: 50%; transform: translateY(-50%); }
+
+        .gift-lid {
+            position: absolute;
+            top: -10px;
+            left: -5%;
+            width: 110%;
+            height: 40px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 2;
+            transition: transform 0.5s ease;
+        }
+
+        .gift-bow {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 40px;
+            z-index: 3;
+        }
+
+        .gift-bow::before, .gift-bow::after {
+            content: '';
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border: 8px solid #fff;
+            border-radius: 50% 50% 0 50%;
+            transform: rotate(45deg);
+        }
+
+        .gift-bow::after {
+            left: 25px;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+        }
+
+        .gift-container:hover .gift-lid {
+            transform: translateY(-10px) rotate(-5deg);
+        }
 
         .tap-text {
             margin-top: 1rem;
@@ -156,7 +201,7 @@
             font-family: 'Playfair Display', serif;
             font-size: clamp(2rem, 6vw, 4rem);
             margin-bottom: 1rem;
-            background: linear-gradient(to right, #ffd700, #fff, #ffd700);
+            background: linear-gradient(to right, var(--primary), #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-size: 200% auto;
@@ -168,53 +213,106 @@
         }
 
         .message {
-            font-size: clamp(0.9rem, 3.2vw, 1.15rem);
-            font-weight: 300;
-            line-height: 1.8;
-            margin-bottom: 2rem;
-            color: rgba(255,255,255,0.9);
-            max-width: 800px;
+            font-size: clamp(1rem, 3.5vw, 1.25rem);
+            font-weight: 400;
+            line-height: 2;
+            margin-bottom: 2.5rem;
+            color: rgba(255,255,255,0.95);
+            max-width: 850px;
             margin-left: auto;
             margin-right: auto;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            font-style: italic;
         }
 
-        /* Photo Gallery */
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+        .signature {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
             margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .photo-item {
+        .signature.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Featured Photo Frame */
+        .featured-photo-container {
+            display: flex;
+            justify-content: center;
+            margin: 2rem auto;
+            perspective: 1000px;
+        }
+
+        .photo-frame {
             position: relative;
-            border-radius: 15px;
-            overflow: hidden;
-            aspect-ratio: 1;
-            border: 2px solid var(--glass-border);
-            transition: transform 0.5s ease;
+            width: 280px;
+            height: 350px;
+            border-radius: 20px;
+            padding: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 15px 35px rgba(255, 20, 147, 0.4),
+                        0 0 20px rgba(255, 20, 147, 0.2);
+            animation: frameFloat 4s ease-in-out infinite;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .photo-item:hover {
-            transform: scale(1.05) rotate(2deg);
-            border-color: var(--primary);
-            z-index: 10;
+        @keyframes frameFloat {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
         }
 
-        .photo-item img {
+        .photo-frame:hover {
+            transform: scale(1.05) rotate(0deg);
+        }
+
+        .photo-frame img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid rgba(255,255,255,0.2);
         }
 
-        /* Hidden photos fix */
-        .photo-item img[src=""] {
-            display: none;
+        .photo-frame::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+
+        /* Shine effect on frame */
+        .photo-frame::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255,255,255,0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: frameShine 3s infinite;
+        }
+
+        @keyframes frameShine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
         }
 
         .btn-celebrate {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #000;
+            color: #fff;
             border: none;
             padding: 1rem 3rem;
             font-size: 1.2rem;
@@ -222,7 +320,7 @@
             border-radius: 50px;
             cursor: pointer;
             margin-top: 2rem;
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 10px 30px rgba(255, 20, 147, 0.4);
             transition: transform 0.3s ease;
         }
 
@@ -238,7 +336,7 @@
             height: 70px;
             background: var(--primary);
             border-radius: 50%;
-            opacity: 0.6;
+            opacity: 0.5;
             z-index: 1;
             animation: float-up linear forwards;
         }
@@ -272,10 +370,15 @@
         /* Mobile Adjustments */
         @media (max-width: 600px) {
             .main-content {
-                padding: 2rem;
+                padding: 1.5rem;
+                width: 95%;
             }
-            .photo-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .photo-frame {
+                width: 220px;
+                height: 280px;
+            }
+            h1 {
+                font-size: 2.2rem;
             }
         }
     </style>
@@ -283,7 +386,7 @@
 <body>
 
     <div class="bg-overlay"></div>
-    <div class="bg-image" id="bgImage" style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('img1.jpeg');"></div>
+    <div class="bg-image" id="bgImage" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('img2.png');"></div>
     <div id="particles-js"></div>
 
     <div class="welcome-screen" id="welcomeScreen">
@@ -299,19 +402,11 @@
     <div class="main-content" id="mainContent">
         <h1>Happy Birthday!</h1>
         <p class="message" id="typedMessage"></p>
+        <div class="signature" id="signature">Forever Your Friend ✨</div>
         
-        <div class="photo-grid">
-            <div class="photo-item">
-                <img src="img1.jpeg" alt="Birthday Memory 1">
-            </div>
-            <div class="photo-item">
-                <img src="img2.jpeg" alt="Birthday Memory 2">
-            </div>
-            <div class="photo-item">
-                <img src="img3.jpeg" alt="Birthday Memory 3">
-            </div>
-            <div class="photo-item">
-                <img src="img4.jpeg" alt="Birthday Memory 4">
+        <div class="featured-photo-container">
+            <div class="photo-frame">
+                <img src="img2.png" alt="Special Memory">
             </div>
         </div>
 
@@ -325,7 +420,7 @@
     <!-- Note: Google Drive links are often unreliable for direct streaming. 
          If the sound still doesn't play, please ensure you have a 'song.mp3' file in this folder and update the src below to "song.mp3" -->
     <audio id="birthdaySong" loop pre-load="auto">
-        <source src="_Enthan_Nanbiye_Teddy_Arya_Anirudh_Tamil_Song_Ringtone_(by Fringster.com) (1).mp3" type="audio/mpeg">
+        <source src="_Oh_My_Kadavule_Friendship_Anthem_Tamil_Ringtone_(by Fringster.com).mp3" type="audio/mpeg">
         <source src="song.mp3" type="audio/mpeg">
         <source src="https://github.com/Kira-7/Happy-Birthday/raw/master/music.mp3" type="audio/mpeg">
     </audio>
@@ -379,7 +474,7 @@
         }
 
         function startTyping() {
-            const text = "உங்களோடு இருந்த நாட்கள் சாதாரண நாட்கள் என்று தான் எண்ணினேன் ஆனால் நீங்கள் இல்லாத இந்த மூன்று வருடத்தில் தான் தெரிந்தது நான் மகிழ்ச்சியாக இருந்த நாட்கள் அது மட்டுமே. நான் உங்களோடு சேர்ந்து படித்த படிப்பு நான் வாங்கும் பட்டத்தை விட மகிழ்ச்சியாக ஏற்கிறேன்.\n\nMANY MORE HAPPY RETURNS OF THE DAY SISTER";
+            const text = "தோழி... உன்னோடு கழித்த அந்த நினைவுகள் என்றும் என் மனதிற்கு நெருக்கமானவை. இனிய பிறந்தநாள் வாழ்த்துக்கள் என் அன்புத் தோழி!";
             const container = document.getElementById('typedMessage');
             let i = 0;
             
@@ -391,7 +486,9 @@
                         container.innerHTML += text.charAt(i);
                     }
                     i++;
-                    setTimeout(type, 35);
+                    setTimeout(type, 50);
+                } else {
+                    document.getElementById('signature').classList.add('show');
                 }
             }
             type();
@@ -454,7 +551,7 @@
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+            ctx.fillStyle = 'rgba(255, 105, 180, 0.4)';
             particles.forEach(p => {
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
